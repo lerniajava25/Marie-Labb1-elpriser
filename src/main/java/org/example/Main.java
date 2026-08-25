@@ -10,7 +10,13 @@ public class Main {
         PriceData[] prices = parser.parse(data);
 
         IO.println("Antal priser: " + prices.length);
-        IO.println("Första priser: " + prices[0].SEK_per_kWh());
+
+        if (prices.length == 0) {
+            IO.println( "Inga priser hittades");
+            return;
+        }
+
+        IO.println("Första priset: " + prices[0].SEK_per_kWh());
 
     }
 }
