@@ -6,6 +6,11 @@ public class Main {
         String url = "https://www.elprisetjustnu.se/api/v1/prices/2026/08-24_SE3.json";
         String data = apiClient.fetchData(url);
 
-        IO.println(data);
+        PriceDataParser parser = new PriceDataParser();
+        PriceData[] prices = parser.parse(data);
+
+        IO.println("Antal priser: " + prices.length);
+        IO.println("Första priser: " + prices[0].SEK_per_kWh());
+
     }
 }
