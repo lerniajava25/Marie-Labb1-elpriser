@@ -1,7 +1,9 @@
 package org.example;
 
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Scanner;
+import java.time.ZoneId;
 
 public class Main {
     void main() throws Exception {
@@ -23,11 +25,11 @@ public class Main {
             System.out.println("Ogiltigt elområde. Välj ett av alternativen.");
         }
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Europe/Stockholm"));
         IO.println("Datum: " + today);
         String year = String.valueOf(today.getYear());
-        String month = String.format("%02d", today.getMonthValue());
-        String day = String.format("%02d", today.getDayOfMonth());
+        String month = String.format(Locale.ROOT,"%02d", today.getMonthValue());
+        String day = String.format(Locale.ROOT,"%02d", today.getDayOfMonth());
 
         ApiClient apiClient = new ApiClient();
         String url = "https://www.elprisetjustnu.se/api/v1/prices/"
