@@ -3,6 +3,9 @@ package org.example;
 public class PriceAnalyzer {
 
     public double minPrice(PriceData[] prices) {
+        if (prices.length == 0) {
+            throw new IllegalArgumentException("Prislistan får inte vara tom");
+        }
         double min = prices[0].SEK_per_kWh();
 
         for (PriceData price : prices) {
@@ -15,6 +18,9 @@ public class PriceAnalyzer {
     }
 
     public double maxPrice(PriceData[] prices) {
+        if (prices.length == 0) {
+            throw new IllegalArgumentException("Prislistan får inte vara tom");
+        }
         double max = prices[0].SEK_per_kWh();
 
         for (PriceData price : prices){
@@ -27,6 +33,9 @@ public class PriceAnalyzer {
     }
 
     public double averagePrice(PriceData[] prices) {
+        if (prices.length == 0) {
+            throw new IllegalArgumentException("Prislistan får inte vara tom");
+        }
         double sum = 0;
 
         for (PriceData price : prices) {
