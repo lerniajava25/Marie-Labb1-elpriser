@@ -61,5 +61,24 @@ public class Main {
         for (PriceData price : sortedPrices) {
             IO.println(String.format(Locale.of("sv","SE"), "%.2f", price.SEK_per_kWh()) + " SEK/kWh");
         }
+
+        PriceData[] bestChargingTime = analyzer.bestChargingTime(prices);
+
+        String startTime = bestChargingTime[0].time_start().substring(11,16);
+        String endTime = bestChargingTime[bestChargingTime.length - 1].time_end().substring(11,16);
+
+        double chargingSum = 0;
+
+        for (PriceData price : bestChargingTime) {
+            chargingSum += price.SEK_per_kWh();
+        }
+
+        double chargingAverage = chargingSum / bestChargingTime.length;
+
+        IO.println("Bästa laddningstiden (4 timmar) är mellan: ");
+        IO.println( startTime + " - " + endTime);
+        IO.println("Medelpriset just då: " + String.format(Locale.of("sv","SE"), "%.2f", chargingAverage) + " SEK/kWh");
+
+
     }
 }
