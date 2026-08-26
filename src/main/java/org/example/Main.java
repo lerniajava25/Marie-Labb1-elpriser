@@ -46,7 +46,14 @@ public class Main {
             return;
         }
 
-        IO.println("Första priset: " + prices[0].SEK_per_kWh());
+        PriceAnalyzer analyzer = new PriceAnalyzer();
+        double minPrice = analyzer.minPrice(prices);
+        double maxPrice = analyzer.maxPrice(prices);
+        double averagePrice = analyzer.averagePrice(prices);
+
+        IO.println("Lägsta pris: " + String.format(Locale.of("sv", "SE"),"%.2f", minPrice) + " SEK/kWh");
+        IO.println("Högsta pris: " + String.format(Locale.of("sv", "SE"),"%.2f", maxPrice) + " SEK/kWh");
+        IO.println("Medelpris: " + String.format(Locale.of("sv", "SE"),"%.2f", averagePrice) + " SEK/kWh");
 
     }
 }
