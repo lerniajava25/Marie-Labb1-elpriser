@@ -1,5 +1,8 @@
 package org.example;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 public class PriceAnalyzer {
 
     public double minPrice(PriceData[] prices) {
@@ -43,5 +46,14 @@ public class PriceAnalyzer {
         }
 
         return sum / prices.length;
+    }
+
+    public PriceData [] sortPrices(PriceData[] prices) {
+        PriceData[] sortedPrices = prices.clone();
+
+        Arrays.sort(sortedPrices,
+        Comparator.comparingDouble(PriceData::SEK_per_kWh));
+
+        return sortedPrices;
     }
 }
