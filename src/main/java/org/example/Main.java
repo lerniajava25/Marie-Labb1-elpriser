@@ -51,9 +51,15 @@ public class Main {
         double maxPrice = analyzer.maxPrice(prices);
         double averagePrice = analyzer.averagePrice(prices);
 
+        PriceData[] sortedPrices = analyzer.sortPrices(prices);
+
         IO.println("Lägsta pris: " + String.format(Locale.of("sv", "SE"),"%.2f", minPrice) + " SEK/kWh");
         IO.println("Högsta pris: " + String.format(Locale.of("sv", "SE"),"%.2f", maxPrice) + " SEK/kWh");
         IO.println("Medelpris: " + String.format(Locale.of("sv", "SE"),"%.2f", averagePrice) + " SEK/kWh");
+        IO.println("Priser från billigast till dyrast: ");
 
+        for (PriceData price : sortedPrices) {
+            IO.println(String.format(Locale.of("sv","SE"), "%.2f", price.SEK_per_kWh()) + " SEK/kWh");
+        }
     }
 }
