@@ -67,6 +67,12 @@ public class Main {
                         PriceDataParser parser = new PriceDataParser();
                         prices = parser.parse(data);
 
+                        if(prices == null || prices.length == 0){
+                            prices = null;
+                            IO.println("Inga priser hittades.");
+                            break;
+                        }
+
                         IO.println("Priser hämtade för " + area);
                         IO.println("Antal priser: " + prices.length);
 
