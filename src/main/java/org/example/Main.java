@@ -6,12 +6,12 @@ import java.util.Scanner;
 import java.time.ZoneId;
 
 public class Main {
-    void main() throws Exception {
+    void main() {
 
         Scanner scanner = new Scanner(System.in);
 
 
-        String area = null;
+        String area;
         PriceData[] prices = null;
         PriceAnalyzer analyzer = new PriceAnalyzer();
 
@@ -20,10 +20,10 @@ public class Main {
             IO.println();
             IO.println("Elpriser - Analysverktyg");
             IO.println("========================");
-            IO.println("1. Välj elområde ( SE1, SE2, SE3, SE4)");
+            IO.println("1. Välj elområde (SE1, SE2, SE3, SE4)");
             IO.println("2. Min, Max och Medelpris");
-            IO.println("3. Sortera priser (lägst -> högst");
-            IO.println("4. Bästa laddningstid (4h sammanhängade)");
+            IO.println("3. Sortera priser (lägst -> högst)");
+            IO.println("4. Bästa laddningstid (4h sammanhängande)");
             IO.println("e. Avsluta");
 
             System.out.print("Välj ett alternativ: ");
@@ -61,13 +61,19 @@ public class Main {
                     String url = "https://www.elprisetjustnu.se/api/v1/prices/"
                             + year + "/" + month + "-" + day + "_" + area + ".json";
 
-                    String data = apiClient.fetchData(url);
+                    try {
+                        String data = apiClient.fetchData(url);
 
-                    PriceDataParser parser = new PriceDataParser();
-                    prices = parser.parse(data);
+                        PriceDataParser parser = new PriceDataParser();
+                        prices = parser.parse(data);
 
-                    IO.println("Priser hämtade för " + area);
-                    IO.println("Antal priser: " + prices.length);
+                        IO.println("Priser hämtade för " + area);
+                        IO.println("Antal priser: " + prices.length);
+
+                    } catch (Exception e) {
+                        prices = null;
+                        IO.println("Kunde inte hämta priser: " + e.getMessage());
+                    }
                     break;
 
                 case "2":
@@ -80,9 +86,9 @@ public class Main {
                     double maxPrice = analyzer.maxPrice(prices);
                     double averagePrice = analyzer.averagePrice(prices);
 
-                    IO.println("Lägsta pris: " + String.format(Locale.of("sv", "SE"),"%.0f", minPrice * 100) + " öre/kWh");
-                    IO.println("Högsta pris: " + String.format(Locale.of("sv", "SE"),"%.0f", maxPrice * 100) + " öre/kWh");
-                    IO.println("Medelpris: " + String.format(Locale.of("sv", "SE"),"%.0f", averagePrice * 100) + " öre/kWh");
+                    IO.println("Lägsta pris: " + formatOre(minPrice));
+                    IO.println("Högsta pris: " + formatOre(maxPrice));
+                    IO.println("Medelpris: " + formatOre(averagePrice));
 
                     break;
 
@@ -97,19 +103,26 @@ public class Main {
                     IO.println("Priser från billigast till dyrast: ");
 
                     for (PriceData price : sortedPrices) {
-                        IO.println(String.format(Locale.of("sv","SE"), "%.0f", price.SEK_per_kWh() * 100) + " öre/kWh");
+                        IO.println(formatOre(price.SEK_per_kWh()));
                     }
                     break;
 
 
 
                 case "4":
-                    if (area == null) {
+                    if (prices == null) {
                         IO.println("Välj först ett elområde genom alternativ 1");
-                    break;
+                        break;
                     }
 
-                    PriceData[] bestChargingTime = analyzer.bestChargingTime(prices);
+                    PriceData[] bestChargingTime;
+                    try {
+                        bestChargingTime = analyzer.bestChargingTime(prices);
+                    } catch (IllegalArgumentException e) {
+                        IO.println(e.getMessage());
+                        break;
+                    }
+
 
                     String startTime = bestChargingTime[0].time_start().substring(11,16);
                     String endTime = bestChargingTime[bestChargingTime.length - 1].time_end().substring(11,16);
@@ -124,14 +137,17 @@ public class Main {
 
                     IO.println("Bästa laddningstiden (4 timmar) är mellan: ");
                     IO.println( startTime + " - " + endTime);
-                    IO.println("Medelpriset just då: " + String.format(Locale.of("sv","SE"), "%.0f", chargingAverage * 100) + " öre/kWh");
+                    IO.println("Medelpriset just då: " + formatOre(chargingAverage));
 
                     break;
 
                 default:
-                    IO.println("ogiltigt val. Välj 1, 2, 3, 4 eller e.");
+                    IO.println("Ogiltigt val. Välj 1, 2, 3, 4 eller e.");
             }
         }
 
+    }
+    private static String formatOre(double sekPerkWh){
+        return String.format(Locale.of("sv", "SE"), "%.0f", sekPerkWh * 100) + " öre/kWh";
     }
 }
